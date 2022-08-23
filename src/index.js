@@ -69,7 +69,7 @@ class QiniuPlugin {
         bucket: {
           type: 'string',
           required: true,
-          minLength: 4,
+          minLength: 3,
           maxLength: 63
         },
         bucketDomain: {
@@ -145,15 +145,15 @@ class QiniuPlugin {
       
       reporter.log = `🍔   将上传 ${uploadFiles.length} 个文件`;
       
+      const localPath = compilation.outputOptions.path + '/'
       const uploadFileTasks = uploadFiles.map((filename, index) => {
-        const file = compilation.assets[filename];
 
         return async () => {
           const key = path.posix.join(this.options.uploadPath, filename);
 
           reporter.text = `🚀  正在上传第 ${index + 1} 个文件: ${key}`;
           
-          return await this.qiniu.putFile(key, file.existsAt);
+          return await this.qiniu.putFile(key, localPath + filename);
         }
       });
       
